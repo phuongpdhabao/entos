@@ -1,0 +1,113 @@
+############################
+# OS / Editor
+############################
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+############################
+# Visual Studio
+############################
+.vs/
+*.rsuser
+*.suo
+*.user
+*.cache
+*.log
+
+############################
+# Build results
+############################
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+*.dll
+*.exe
+*.pdb
+*.cache
+
+############################
+# .NET / NuGet
+############################
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.assets.json
+
+############################
+# XAF / DevExpress specific
+############################
+# Model files generated at runtime
+*.xafml
+*.xafml.bak
+Model.User.xafml
+Model.DesignedDiffs.xafml
+Updater.cs
+
+# WinForms / Blazor runtime artifacts
+*.mdb
+*.ldf
+
+# DevExpress reports / layouts generated
+*.repx
+*.layout
+*.xml.bak
+
+# XAF Web / Blazor temp
+wwwroot/_content/
+wwwroot/_framework/
+
+############################
+# ASP.NET / Blazor
+############################
+appsettings.Development.json
+appsettings.Local.json
+
+############################
+# Logs & temp
+############################
+*.log
+logs/
+temp/
+tmp/
+
+############################
+# Database
+############################
+*.mdf
+*.ldf
+*.db
+*.sqlite
+*.sqlite3
+
+############################
+# Publish / Deploy
+############################
+publish/
+artifacts/
+
+############################
+# Docker
+############################
+.env
+docker-compose.override.yml
+
+############################
+# Rider / ReSharper
+############################
+_ReSharper*/
+*.DotSettings.user
+
+############################
+# Test results
+############################
+TestResults/

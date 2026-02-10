@@ -1,0 +1,13 @@
+﻿using DevExpress.ExpressApp.DC;
+using ENTOS.Module.BusinessObjects;
+
+namespace ENTOS.Module.BusinessObjects
+{
+	public interface IUpDownOrder
+    {
+		int? Order
+		{get;set;}
+
+    }
+
+}

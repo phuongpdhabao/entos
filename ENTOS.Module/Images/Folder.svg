@@ -1,0 +1,11 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<svg x="0px" y="0px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" id="Layer_1" style="enable-background:new 0 0 32 32">
+  <style type="text/css">
+	.Black{fill:#727272;}
+	.Yellow{fill:#FFB115;}
+</style>
+  <path d="M10,26v-8h4v-2h-4v-4H8v16h6v-2H10z" class="Black" />
+  <path d="M15,4h-5V3c0-0.6-0.4-1-1-1H5C4.4,2,4,2.4,4,3v2v1v3c0,0.6,0.4,1,1,1h10c0.5,0,1-0.4,1-1V5  C16,4.4,15.5,4,15,4z" class="Yellow" />
+  <path d="M27,14h-5v-1c0-0.6-0.4-1-1-1h-4c-0.6,0-1,0.4-1,1v2v1v3c0,0.6,0.4,1,1,1h10c0.5,0,1-0.4,1-1v-4  C28,14.4,27.5,14,27,14z" class="Yellow" />
+  <path d="M27,24h-5v-1c0-0.6-0.4-1-1-1h-4c-0.6,0-1,0.4-1,1v2v1v3c0,0.6,0.4,1,1,1h10c0.5,0,1-0.4,1-1v-4  C28,24.4,27.5,24,27,24z" class="Yellow" />
+</svg>

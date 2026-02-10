@@ -1,0 +1,132 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Deterministic>false</Deterministic>
+    <AssemblyVersion>1.0.*</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Configurations>Debug;Release;EasyTest</Configurations>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType> <!-- hoặc full -->
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+  	<EmbeddedResource Include="Images\\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>  
+  </ItemGroup>  
+  <ItemGroup>
+     <PackageReference Include="AutoMapper" Version="12.0.1" />
+     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+     <PackageReference Include="CLD2.Net" Version="1.0.0" />
+     <PackageReference Include="DevExpress.ExpressApp" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.Chart" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.CloneObject" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.ConditionalAppearance" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.Dashboards" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.Office" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.PivotGrid" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.ReportsV2" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.Scheduler" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.StateMachine" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.TreeListEditors" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.Validation" Version="25.2.3" />
+     <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="25.2.3" />
+     <PackageReference Include="DevExpress.Persistent.Base" Version="25.2.3" />
+     <PackageReference Include="DevExpress.Persistent.BaseImpl.Xpo" Version="25.2.3" />
+     <PackageReference Include="DevExpress.Xpo" Version="25.2.3" />
+     <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
+     <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.32.2" />
+     <PackageReference Include="Hangfire" Version="1.8.20" />
+     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.20" />
+     <PackageReference Include="Hangfire.Console" Version="1.4.3" />
+     <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+     <PackageReference Include="Kelter.Forks.YoutubeTranscriptApi" Version="0.4.2" />
+     <PackageReference Include="Markdig" Version="0.41.3" />
+     <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.6.0" />
+     <PackageReference Include="Microsoft.Playwright" Version="1.52.0" />
+     <PackageReference Include="OpenAI" Version="2.0.0-beta.7" />
+     <PackageReference Include="OpenCvSharp4" Version="4.10.0.20241108" />
+     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20241108" />
+     <PackageReference Include="PiperSharp" Version="1.0.4" />
+     <PackageReference Include="pythonnet" Version="3.0.3" />
+     <PackageReference Include="Scrutor" Version="6.0.1" />
+     <PackageReference Include="Selenium.WebDriver" Version="4.16.2" />
+     <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
+     <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
+     <PackageReference Include="System.CodeDom" Version="9.0.2" />
+     <PackageReference Include="System.DirectoryServices" Version="6.0.0" />
+     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="6.0.0" />
+     <PackageReference Include="YoutubeExplode" Version="6.5.6" />
+     <PackageReference Include="YoutubeExplode.Converter" Version="6.5.6" />
+     <PackageReference Include="DevExpress.ExpressApp.Notifications" Version="25.2.3" />
+     <PackageReference Include="LanguageDetection.NETStandard" Version="1.3.1" />
+     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
+     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.4" />
+     <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.100" />
+     <PackageReference Include="MicrosoftOfficeCore15" Version="15.0.4420.1017" />
+     <PackageReference Include="MySqlBackup.Net.DevartExpress" Version="2.6.5" />
+     <PackageReference Include="NAudio" Version="2.2.1" />
+     <PackageReference Include="NHunspell" Version="1.2.5554.16953" />
+     <PackageReference Include="NHunspell.Patched" Version="1.2.5554" />
+     <PackageReference Include="PdfiumViewer" Version="2.13.0" />
+     <PackageReference Include="PdfiumViewer.Native.x86_64.v8-xfa" Version="2018.4.8.256" />
+     <PackageReference Include="PhpSerializerNET" Version="1.4.0" />
+     <PackageReference Include="Scriban" Version="6.4.0" />
+     <PackageReference Include="SkiaSharp" Version="3.119.1" />
+     <PackageReference Include="SubtitlesParser" Version="1.5.1" />
+          <PackageReference Include="Svg" Version="3.4.7">
+       <Aliases>SvgNetAlias</Aliases>
+     </PackageReference>
+     <PackageReference Include="WooCommerceNET" Version="0.8.6" />
+     <PackageReference Include="WordPressPCL" Version="2.0.2" />
+  </ItemGroup>  
+  <ItemGroup>
+	<Content Include="Domain/Interfaces\ReadMe.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>   
+	<Content Include="Resources\CommonMessages.resx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>   
+	<Content Include="Resources\CommonMessages.vi.resx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>   
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.xafml" />    
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.Localization.vi.xafml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>    
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.Localization.ko.xafml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>             
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.Localization.ja.xafml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>             
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.Localization.en.xafml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>             
+</Project>

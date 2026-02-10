@@ -1,0 +1,1 @@
+﻿Các interface dùng chung sẽ để ở thư mục này, sau sẽ chuyển sang project ENTOS.Domain.Interfaces theo kiến trúc Clean Architecture
