@@ -7121,20 +7121,12 @@ namespace ENTOS.Module.Services
             //Kiểm tra xem có ký tự không            
             if (string.IsNullOrEmpty(content))
                 return false;
-            bool hasChar = false;
-            foreach (var c in content)
-            {
-                //Nạp số/Number : Sẽ nạp cả các số đơn lẻ
-                if (video.Number && char.IsNumber(c))
-                    return true;
-                else if (char.IsLetter(c))
-                {
-                    hasChar = true;
-                    break;
-                }
-            }
+            //Nạp số/Number : Sẽ nạp cả các số đơn lẻ
+            if (video.Number && NodeContentIsValidate_HasNumberChar(content))
+                return true;
+            bool hasChar = NodeContentIsValidate_HasLetterChar(content);
             //2024-9-11: Option Number sẽ nạp cả các ký tự đơn
-            if (!video.Number && content.Trim().Length < 2)
+            if (NodeContentIsValidate_IsTooShort(content, video.Number))
                 return false;
             if (!hasChar)
                 return false;
@@ -9320,11 +9312,7 @@ namespace ENTOS.Module.Services
 
         public bool CheckTextIsXpath(string text)
         {
-            if (!string.IsNullOrEmpty(text) && (text.StartsWith("/html") || text.StartsWith("//*[")))
-            {
-                return true;
-            }
-            return false;
+            return CheckTextIsXpath_IsXpathFormat(text);
         }
 
         public void LogToNote(Video video, System.DateTime startTime, string function, int select, int resultCount, System.TimeSpan elapsed)

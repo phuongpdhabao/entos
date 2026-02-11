@@ -671,7 +671,7 @@ namespace ENTOS.Module.Services
             //-and, or, of, via, in, with, to, for (bổ sung dần)
             //    -và, hoặc, của, qua, trong, với, tới, cho
             //2023-08-21: Hoa đầu mỗi từ không được chứa viết hoa toàn bộ
-            if (audioContent.Equals(audioContent.ToUpper()))
+            if (ElementFlagUpperCase_IsAllUpperCase(audioContent))
                 return false;
             var upperCaseAcceptWordsArray = video.GetUpperCaseAcceptWords( column == "Content");
             //Có viết hoa > em phải không được tính chữ hoa đầu câu => 2023-08-21: đổi cấu trúc
@@ -689,7 +689,7 @@ namespace ENTOS.Module.Services
                     var content = childContent.Trim();
                     //2023-08-02: Cờ thành phần > Có viết hoa: không được tính viết tắt
                     var words = content.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-                    if (rows.Length == 1 && childContents.Length == 1 && words.Length == 1)
+                    if (ElementFlagUpperCase_IsSingleWord(rows.Length, childContents.Length, words.Length))
                     {
                         //2025-02-19:  002 xác định Đầu hoa với thành phần chỉ có 1 từ > chỉ là Thường
                         return false;
@@ -700,7 +700,7 @@ namespace ENTOS.Module.Services
                         if (char.IsUpper(words[i][0]))
                         {
                             //2023-10-09: 001 Hoa đầu mỗi từ cần chấp nhận các từ viết tắt, nhưng phân biệt với hoa toàn bộ ở chỗ có tồn tại chữ thường
-                            if (words[i].Length > 1 && words[i].ToUpper().Equals(words[i]))
+                            if (ElementFlagUpperCase_IsAbbreviation(words[i]))
                             {
                                 lower = true;
                                 break;
@@ -714,15 +714,7 @@ namespace ENTOS.Module.Services
                             if (!upperCaseMany)
                             {
                                 //Kiểm tra xem có chữ thường ko
-                                bool hasLower = false;
-                                foreach (var w in words[i])
-                                {
-                                    if (char.IsLower(w))
-                                    {
-                                        hasLower = true;
-                                        break;
-                                    }
-                                }
+                                bool hasLower = ElementFlagUpperCase_HasLowerCaseChar(words[i]);
                                 if (hasLower)
                                 {
                                     //2023-10-09: 001 Hoa đầu mỗi từ cần chấp nhận các từ viết tắt, nhưng phân biệt với hoa toàn bộ ở chỗ có tồn tại chữ thường
@@ -734,7 +726,7 @@ namespace ENTOS.Module.Services
                                         //-and, or, of, via, in, with, to, for (bổ sung dần)
                                         //    -và, hoặc, của, qua, trong, với, tới, cho
                                         //2025-06-04: các từ chấp nhận không được đứng đầu câu
-                                        if (i > 0 && upperCaseAcceptWordsArray != null && upperCaseAcceptWordsArray.Contains(word))
+                                        if (ElementFlagUpperCase_IsAcceptedLowerWord(word, i, upperCaseAcceptWordsArray))
                                             continue;
                                         lower = true;
                                         break;
@@ -750,15 +742,7 @@ namespace ENTOS.Module.Services
                 if (lower)
                     break;
             }
-            if (upperCaseMany)
-            {
-                return upperCount > lowerCount;
-            }
-            else if (upper && !lower)
-            {
-                return true;
-            }
-            return false;
+            return ElementFlagUpperCase_ComputeResult(upperCaseMany, upperCount, lowerCount, upper, lower);
 
         }
 
