@@ -100,17 +100,17 @@ namespace ENTOS.Module.Services
         #region SourceCode3294ImportCode
                 public string CheckResultType(object result)
         {
-            if (result is string)
+            if (result is string stringResult)
             {
-                if (((string)result).StartsWith("{") && ((string)result).EndsWith("}"))
+                if (CheckResultType_IsJson(stringResult))
                 {
                     return "json";
                 }
-                else if (((string)result).StartsWith("<") && ((string)result).EndsWith(">"))
+                else if (CheckResultType_IsXml(stringResult))
                 {
                     return "xml";
                 }
-                else if (((string)result).StartsWith("1") && ((string)result).Contains(" --> "))
+                else if (CheckResultType_IsSrt(stringResult))
                 {
                     return "srt";
                 }
