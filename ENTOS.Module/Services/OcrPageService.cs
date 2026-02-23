@@ -64,9 +64,7 @@ namespace ENTOS.Module.Services
                 var memberInfo = typeInfo.FindMember(val.ExtractionKey.Code);
                 if (memberInfo != null && !memberInfo.IsReadOnly)
                 {
-                    string dataTypeName = val.ExtractionKey.DataType?.Name ?? "String";
-                    object value = Module.Services.OcrValueService.CastValue(val.Value, dataTypeName);
-                    memberInfo.SetValue(mainObject, value);
+                    SetMemberValue(memberInfo, mainObject, val);
                 }
             }
 
@@ -100,9 +98,7 @@ namespace ENTOS.Module.Services
                             var memberInfo = tableTypeInfo.FindMember(val.ExtractionKey.Code);
                             if (memberInfo != null && !memberInfo.IsReadOnly)
                             {
-                                string dataTypeName = val.ExtractionKey.DataType?.Name ?? "String";
-                                object value = Module.Services.OcrValueService.CastValue(val.Value, dataTypeName);
-                                memberInfo.SetValue(tableRowObj, value);
+                                SetMemberValue(memberInfo, tableRowObj, val);
                             }
                         }
 
@@ -156,17 +152,7 @@ namespace ENTOS.Module.Services
 
             foreach (var page in orderedPages)
             {
-                if (!first)
-                {
-                    // chèn phân cách giữa các trang
-                    sb.AppendLine();
-                    sb.AppendLine("---");
-                    sb.AppendLine();
-                }
-
-                sb.AppendLine(page.OcrMarkdown);
-                sb.AppendLine();
-
+                AppendPageMarkdown(sb, page, !first);
                 first = false;
             }
 

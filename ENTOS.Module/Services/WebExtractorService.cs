@@ -113,61 +113,29 @@ namespace ENTOS.Module.Services
                         }
                         if (!string.IsNullOrEmpty(addresses))
                         {
-                            if (!string.IsNullOrEmpty(((WebExtractor)currentWebExtractor).Addresses) &&
-                            !((WebExtractor)currentWebExtractor).Addresses.EndsWith("\r\n"))
-                            {
-                                addresses = "\r\n" + addresses;
-                            }
-                        ((WebExtractor)currentWebExtractor).Addresses += addresses;
+                            addresses = PrependNewLineIfNeeded(currentWebExtractor.Addresses, addresses);
+                            currentWebExtractor.Addresses += addresses;
                         }
                         return;
                     }
                     if (htmlText.StartsWith("http") || htmlText.StartsWith("www"))
                     {
                         //Hỗ trợ paste link trực tiếp
-                        var currentLink = System.Uri.UnescapeDataString(htmlText);
-                        if (!string.IsNullOrEmpty(((WebExtractor)currentWebExtractor).Addresses) &&
-                            !((WebExtractor)currentWebExtractor).Addresses.EndsWith("\r\n"))
-                        {
-                            currentLink = "\r\n" + currentLink;
-                        }
-                        ((WebExtractor)currentWebExtractor).Addresses += currentLink;
+                        var currentLink = NormalizeDirectLink(htmlText, currentWebExtractor.Addresses);
+                        currentWebExtractor.Addresses += currentLink;
                         return;
                     }
                     //Không phải là cấu trúc html
-                    if (!htmlText.StartsWith("<") && !htmlText.StartsWith(">") && !htmlText.Contains("<html>") && !htmlText.Contains("</html>"))
+                    if (!IsHtmlContent(htmlText))
                         return;
-                    var htmlDocument = new HtmlAgilityPack.HtmlDocument();
-
-                    htmlDocument.LoadHtml(htmlText);
                     string nodeName = choice.Equals("Url") ? "a" : "img";
                     string nodeAttribute = choice.Equals("Url") ? "href" : "src";
-                    var allLink = htmlDocument.DocumentNode.Descendants(nodeName);
-                    string result = "";
-                    int total = 0;
-                    IList<string> links = new List<string>();
-                    foreach (var linkNode in allLink)
+                    string result = ExtractLinkLines(htmlText, nodeName, nodeAttribute);
+                    if (!string.IsNullOrEmpty(result))
                     {
-                        string href = linkNode.GetAttributeValue(nodeAttribute, "default");
-                        if (string.IsNullOrEmpty(href))
-                            continue;
-                        //Html Decode href
-                        href = System.Uri.UnescapeDataString(href);
-                        if (!string.IsNullOrEmpty(href) && !links.Contains(href))
-                        {
-                            links.Add(href);
-                            if (!string.IsNullOrEmpty(result))
-                                result += System.Environment.NewLine;
-                            result += href;
-                            total++;
-                        }
+                        result = PrependNewLineIfNeeded(currentWebExtractor.Addresses, result);
+                        currentWebExtractor.Addresses += result;
                     }
-                    if (!string.IsNullOrEmpty(((WebExtractor)currentWebExtractor).Addresses) &&
-                                !((WebExtractor)currentWebExtractor).Addresses.EndsWith("\r\n"))
-                    {
-                        result = "\r\n" + result;
-                    }
-                    ((WebExtractor)currentWebExtractor).Addresses += result;
                 }
             }
 
@@ -235,61 +203,29 @@ namespace ENTOS.Module.Services
                         }
                         if (!string.IsNullOrEmpty(addresses))
                         {
-                            if (!string.IsNullOrEmpty(((WebExtractor)currentWebExtractor).Addresses) &&
-                            !((WebExtractor)currentWebExtractor).Addresses.EndsWith("\r\n"))
-                            {
-                                addresses = "\r\n" + addresses;
-                            }
-                        ((WebExtractor)currentWebExtractor).Addresses += addresses;
+                            addresses = PrependNewLineIfNeeded(currentWebExtractor.Addresses, addresses);
+                            currentWebExtractor.Addresses += addresses;
                         }
                         return;
                     }
                     if (htmlText.StartsWith("http") || htmlText.StartsWith("www"))
                     {
                         //Hỗ trợ paste link trực tiếp
-                        var currentLink = System.Uri.UnescapeDataString(htmlText);
-                        if (!string.IsNullOrEmpty(((WebExtractor)currentWebExtractor).Addresses) &&
-                            !((WebExtractor)currentWebExtractor).Addresses.EndsWith("\r\n"))
-                        {
-                            currentLink = "\r\n" + currentLink;
-                        }
-                        ((WebExtractor)currentWebExtractor).Addresses += currentLink;
+                        var currentLink = NormalizeDirectLink(htmlText, currentWebExtractor.Addresses);
+                        currentWebExtractor.Addresses += currentLink;
                         return;
                     }
                     //Không phải là cấu trúc html
-                    if (!htmlText.StartsWith("<") && !htmlText.StartsWith(">") && !htmlText.Contains("<html>") && !htmlText.Contains("</html>"))
+                    if (!IsHtmlContent(htmlText))
                         return;
-                    var htmlDocument = new HtmlAgilityPack.HtmlDocument();
-
-                    htmlDocument.LoadHtml(htmlText);
                     string nodeName = choice.Equals("Url") ? "a" : "img";
                     string nodeAttribute = choice.Equals("Url") ? "href" : "src";
-                    var allLink = htmlDocument.DocumentNode.Descendants(nodeName);
-                    string result = "";
-                    int total = 0;
-                    IList<string> links = new List<string>();
-                    foreach (var linkNode in allLink)
+                    string result = ExtractLinkLines(htmlText, nodeName, nodeAttribute);
+                    if (!string.IsNullOrEmpty(result))
                     {
-                        string href = linkNode.GetAttributeValue(nodeAttribute, "default");
-                        if (string.IsNullOrEmpty(href))
-                            continue;
-                        //Html Decode href
-                        href = System.Uri.UnescapeDataString(href);
-                        if (!string.IsNullOrEmpty(href) && !links.Contains(href))
-                        {
-                            links.Add(href);
-                            if (!string.IsNullOrEmpty(result))
-                                result += System.Environment.NewLine;
-                            result += href;
-                            total++;
-                        }
+                        result = PrependNewLineIfNeeded(currentWebExtractor.Addresses, result);
+                        currentWebExtractor.Addresses += result;
                     }
-                    if (!string.IsNullOrEmpty(((WebExtractor)currentWebExtractor).Addresses) &&
-                                !((WebExtractor)currentWebExtractor).Addresses.EndsWith("\r\n"))
-                    {
-                        result = "\r\n" + result;
-                    }
-                    ((WebExtractor)currentWebExtractor).Addresses += result;
                 }
             }
 
@@ -300,8 +236,7 @@ namespace ENTOS.Module.Services
 
         #endregion SourceCode4535ImportCode
 
-  
-  
+
         #region Base Object Service
 	    		//public string ToolTipControllerText(View view, Module.BusinessObjects.WebExtractor webextractor)
         //{

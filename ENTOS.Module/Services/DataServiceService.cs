@@ -100,30 +100,7 @@ namespace ENTOS.Module.Services
         #region SourceCode3294ImportCode
                 public string CheckResultType(object result)
         {
-            if (result is string)
-            {
-                if (((string)result).StartsWith("{") && ((string)result).EndsWith("}"))
-                {
-                    return "json";
-                }
-                else if (((string)result).StartsWith("<") && ((string)result).EndsWith(">"))
-                {
-                    return "xml";
-                }
-                else if (((string)result).StartsWith("1") && ((string)result).Contains(" --> "))
-                {
-                    return "srt";
-                }
-                else
-                {
-                    return "text";
-                }
-            }
-            else if (result is byte[])
-            {
-                return "file";
-            }
-            return null;
+            return GetResultTypeValue(result);
         }
         
         public object GetResult(DataService dataService, ViewController view, object[] inputs, string[] outputs, string logContent = null)

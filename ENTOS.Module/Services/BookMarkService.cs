@@ -63,11 +63,7 @@ namespace ENTOS.Module.Services
             {
                 using (new NetworkConnection(rootPath, credentials))
                 {
-                    string recognizeFolder = System.IO.Path.Combine(rootPath, "recognize");
-                    string userFolder = System.IO.Path.Combine(recognizeFolder, userName);
-                    string fileFolder = System.IO.Path.Combine(userFolder, fileCode);
-                    string timeFolder = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                    string sessionFolder = System.IO.Path.Combine(fileFolder, timeFolder);
+                    var (recognizeFolder, userFolder, fileFolder, sessionFolder) = BuildRecognitionFolders(rootPath, userName, fileCode);
 
                     try
                     {
@@ -122,12 +118,12 @@ namespace ENTOS.Module.Services
                                 {
                                     string extension = System.IO.Path.GetExtension(URL).ToLowerInvariant();
 
-                                    if (extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".webp")
+                                    if (IsImageExtension(extension))
                                     {
                                         System.Console.WriteLine($"🖼️ Xử lý ảnh đơn: {URL}");
                                         Module.Services.RecognitionService.ProcessSingleImage(URL, bookmarkFolder, ref imageIndex);
                                     }
-                                    else if (extension == ".mp4" || extension == ".avi" || extension == ".mov" || extension == ".mkv")
+                                    else if (IsVideoExtension(extension))
                                     {
                                         System.Console.WriteLine($"🎥 Xử lý video: {URL}");
                                         imageIndex = Module.Services.RecognitionService.ProcessVideo(URL, bookmarkFolder, imageIndex, gapFrame);

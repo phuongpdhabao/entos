@@ -66,7 +66,7 @@ namespace ENTOS.Module.Services
 
                     string marked = content;
 
-                    if ((block + "\n").Length + marked.Length >= maxLength)
+                    if (IsBlockOverLimit(block, marked, maxLength))
                     {
                         Module.Services.ElementTranslateService.ProcessBlockTranslate(
                             dataService, blockList, block, video.LanguageOrigin.Code, language.Code);
@@ -107,10 +107,7 @@ namespace ENTOS.Module.Services
             if (string.IsNullOrWhiteSpace(fullTranslated))
                 return;
 
-            var results = fullTranslated
-                .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim())
-                .ToArray();
+            var results = SplitTranslatedLines(fullTranslated);
 
             if (results.Length != audioBlock.Count)
                 return; // fallback nếu không khớp

@@ -53,7 +53,7 @@ namespace ENTOS.Module.Services
             if (masterObject is null)
                 return;
             if (allAccoutingTemplates == null)
-                allAccoutingTemplates = viewController.View.ObjectSpace.GetObjects<AccountingTemplate>(new DevExpress.Data.Filtering.BinaryOperator("ObjectType", masterObject.GetType()));
+                allAccoutingTemplates = LoadAccountingTemplates(viewController.View.ObjectSpace, masterObject.GetType());
             var listAccoutingTemplates = allAccoutingTemplates;
             if (listAccoutingTemplates == null)
                 return;
@@ -61,7 +61,7 @@ namespace ENTOS.Module.Services
             {
                 foreach (var entryTemplate in accoutingTemplate.EntryTemplates)
                 {
-                    singleChoiceAction.Items.Add(new DevExpress.ExpressApp.Actions.ChoiceActionItem(entryTemplate.EntryFolder.Name, entryTemplate.Oid));
+                    singleChoiceAction.Items.Add(CreateEntryTemplateItem(entryTemplate));
                 }
             }
 

@@ -77,7 +77,7 @@ namespace ENTOS.Module.Services
             try
             {
                 int totalFrameCount = Module.Helpers.AudioVideoHelper.GetTotalFrameCount(videoPath);
-                int frameDigits = System.Math.Max(3, totalFrameCount.ToString().Length); // luôn tối thiểu 3 chữ số
+                int frameDigits = ComputeFrameDigits(totalFrameCount); // luôn tối thiểu 3 chữ số
 
                 var processInfo = new System.Diagnostics.ProcessStartInfo
                 {
@@ -118,9 +118,7 @@ namespace ENTOS.Module.Services
                         int n = int.Parse(match.Groups[1].Value) + 1;
                         double ptsTime = double.Parse(match.Groups[2].Value, System.Globalization.CultureInfo.InvariantCulture);
 
-                        int frameNumber = ptsTime % 1 == 0
-                            ? (int)ptsTime
-                            : (int)System.Math.Round(ptsTime * fps);
+                        int frameNumber = ComputeFrameNumber(ptsTime, fps);
 
                         string sourcePath = System.IO.Path.Combine(tempOutputFolder, $"frame_n{n:D4}.jpg");
                         string destPath = System.IO.Path.Combine(tempOutputFolder, $"frame_{frameNumber.ToString().PadLeft(frameDigits, '0')}.jpg");
@@ -144,50 +142,40 @@ namespace ENTOS.Module.Services
                 {
                     int start = frameNumbers[i];
                     int end = frameNumbers[i + 1];
-                    int distance = end - start;
+                    var extraFrames = ComputeExtraFrames(start, end, gapFrame);
 
-                    if (distance > gapFrame)
+                    foreach (var extraFrame in extraFrames)
                     {
-                        int numExtra = distance / gapFrame;
-                        int remainder = distance % (numExtra + 1);
-                        double extraGap = (double)distance / (numExtra + 1);
+                        double timeInSeconds = extraFrame / fps;
+                        string outputImage = System.IO.Path.Combine(tempOutputFolder, $"frame_{extraFrame.ToString().PadLeft(frameDigits, '0')}.jpg");
+                        string extractArgs = $"-ss {timeInSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)} -i \"{safeVideoPath}\" -frames:v 1 \"{outputImage}\"";
 
-                        for (int j = 1; j <= numExtra; j++)
+                        var extractInfo = new System.Diagnostics.ProcessStartInfo
                         {
-                            int extraFrame = (int)(start + j * extraGap);
-                            if (remainder > 0) { extraFrame += 1; remainder--; }
+                            FileName = ffmpegPath,
+                            Arguments = extractArgs,
+                            CreateNoWindow = false,
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true
+                        };
 
-                            double timeInSeconds = extraFrame / fps;
-                            string outputImage = System.IO.Path.Combine(tempOutputFolder, $"frame_{extraFrame.ToString().PadLeft(frameDigits, '0')}.jpg");
-                            string extractArgs = $"-ss {timeInSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)} -i \"{safeVideoPath}\" -frames:v 1 \"{outputImage}\"";
+                        using (var extractProcess = new System.Diagnostics.Process { StartInfo = extractInfo })
+                        {
+                            extractProcess.Start();
+                            var outputTask = System.Threading.Tasks.Task.Run(() => extractProcess.StandardOutput.ReadToEnd());
+                            var errorTask = System.Threading.Tasks.Task.Run(() => extractProcess.StandardError.ReadToEnd());
+                            extractProcess.WaitForExit();
+                            string output = outputTask.Result;
+                            string error = errorTask.Result;
 
-                            var extractInfo = new System.Diagnostics.ProcessStartInfo
+                            if (!string.IsNullOrWhiteSpace(error))
                             {
-                                FileName = ffmpegPath,
-                                Arguments = extractArgs,
-                                CreateNoWindow = false,
-                                UseShellExecute = false,
-                                RedirectStandardOutput = true,
-                                RedirectStandardError = true
-                            };
-
-                            using (var extractProcess = new System.Diagnostics.Process { StartInfo = extractInfo })
-                            {
-                                extractProcess.Start();
-                                var outputTask = System.Threading.Tasks.Task.Run(() => extractProcess.StandardOutput.ReadToEnd());
-                                var errorTask = System.Threading.Tasks.Task.Run(() => extractProcess.StandardError.ReadToEnd());
-                                extractProcess.WaitForExit();
-                                string output = outputTask.Result;
-                                string error = errorTask.Result;
-
-                                if (!string.IsNullOrWhiteSpace(error))
-                                {
-                                    Console.WriteLine("FFmpeg error: " + error);
-                                }
-
-                                if (System.IO.File.Exists(outputImage))
-                                    extraFrameCount++;
+                                Console.WriteLine("FFmpeg error: " + error);
                             }
+
+                            if (System.IO.File.Exists(outputImage))
+                                extraFrameCount++;
                         }
                     }
                 }

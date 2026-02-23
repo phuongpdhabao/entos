@@ -61,9 +61,7 @@ namespace ENTOS.Module.Services
         #region SourceCode3559ImportCode
         public double GetDoubleValue(Parameter parameter)
 {
-    if (!string.IsNullOrEmpty(parameter.Value))
-        return Convert.ToDouble(parameter.Value, new System.Globalization.CultureInfo("en-US"));
-    return 0;
+    return ParseDoubleValue(parameter.Value);
 }
         #endregion SourceCode3559ImportCode
 

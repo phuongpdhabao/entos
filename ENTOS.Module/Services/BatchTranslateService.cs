@@ -53,31 +53,18 @@ namespace ENTOS.Module.Services
             var video = elementBatch.Video;
             var originLanguage = video.LanguageOrigin?.Name ?? "";
             var prompt = video.Note ?? "";
-            var content = string.Empty;
+            var contentLines = new List<string>();
 
             foreach (Audio audio in elementBatch.AudioList.OrderBy(x => x.Start))
             {
-                if (audio.Content != null && audio.Content.Trim().Length > 0 && symbol != null)
+                if (audio.Content != null && audio.Content.Trim().Length > 0)
                 {
-                    content += audio.Content.Trim() + symbol + "\n";
-                }
-                else if (audio.Content != null && audio.Content.Trim().Length > 0)
-                {
-                    content += audio.Content.Trim() + "\n";
+                    contentLines.Add(audio.Content.Trim());
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(originLanguage) && !string.IsNullOrWhiteSpace(targetLanguage))
-            {
-                var regex = new Regex(@"tiếng\s+((?:[A-ZÀ-Ỵ][\p{L}\-]*\s*){1,3})", RegexOptions.Multiline);
-                prompt = regex.Replace(prompt, match =>
-                {
-                    var foundLang = match.Value.Trim();
-                    return foundLang.Equals($"tiếng {originLanguage}", StringComparison.OrdinalIgnoreCase)
-                        ? match.Value
-                        : $"tiếng {targetLanguage} ";
-                });
-            }
+            var content = BuildContentText(contentLines, symbol);
+            prompt = UpdatePromptLanguage(prompt, originLanguage, targetLanguage);
 
             var sb = new StringBuilder();
             sb.AppendLine(prompt);
@@ -95,11 +82,7 @@ namespace ENTOS.Module.Services
             originLanguage ??= "ngôn ngữ gốc";
             targetLanguage ??= "ngôn ngữ đích";
 
-            var markedLines = content
-                .Split('\n')
-                .Select(line => string.IsNullOrWhiteSpace(line) ? line : line.TrimEnd());
-
-            var markedContent = string.Join("\n", markedLines);
+            var markedContent = NormalizePromptLines(content);
 
             var sb = new StringBuilder();
             sb.Append("Hãy dịch nội dung sau đây từ ");
@@ -189,25 +172,19 @@ namespace ENTOS.Module.Services
                 double sim12 = Module.Helpers.TextHelper.CalculateWordSimilarity(builtClean, translated);
                 double sim22 = Module.Helpers.TextHelper.CalculateWordSimilarity(subtitleClean, contentTranslated);
 
-                double score = (0.7*sim1 + 0.7*sim2 + 0.3*sim12 + 0.3*sim22) / 2;
+                bool strongEnd = (!reverse && EndsWithStrongPunctuation(builtClean)) ||
+                    (reverse && EndsWithStrongPunctuation(subtitleClean));
+                bool softEnd = (!reverse && EndsWithSoftPunctuation(builtClean)) ||
+                    (reverse && EndsWithSoftPunctuation(subtitleClean));
 
-                if ((!reverse && EndsWithStrongPunctuation(builtClean)) ||
-                    (reverse && EndsWithStrongPunctuation(subtitleClean)))
-                {
-                    score += 0.1;
-                }
-                if ((!reverse && EndsWithSoftPunctuation(builtClean)) ||
-                    (reverse && EndsWithSoftPunctuation(subtitleClean)))
-                {
-                    score += 0.05;
-                }
+                double baseScore = ComputeBaseInferScore(sim1, sim2, sim12, sim22);
+                double score = ApplyPunctuationScore(baseScore, strongEnd, softEnd);
 
                 scores.Add((builtClean, score));
             }
 
             return scores;
         }
-
 
 
         #endregion SourceCode3386ImportCode
@@ -355,24 +332,6 @@ namespace ENTOS.Module.Services
     }
 
     return null;
-
-    bool IsPunctuationInMiddle(string line, System.Text.RegularExpressions.Regex regex)
-    {
-        if (string.IsNullOrWhiteSpace(line) || line.Length < 3)
-            return false;
-
-        var matches = regex.Matches(line);
-        foreach (System.Text.RegularExpressions.Match match in matches)
-        {
-            int index = match.Index;
-
-            // Dấu ngắt phải nằm không ở cuối dòng
-            if (index > 0 && index < line.Length - 2)
-                return true;
-        }
-
-        return false;
-    }
 }
 
         #endregion SourceCode3346ImportCode

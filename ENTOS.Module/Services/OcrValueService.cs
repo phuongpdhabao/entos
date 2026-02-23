@@ -67,10 +67,9 @@ namespace ENTOS.Module.Services
                if (validation.Contains("NumberToText", StringComparison.OrdinalIgnoreCase))
                {
                    // Ví dụ: "NumberToText(FieldA) == 'một trăm'"
-                   var match = System.Text.RegularExpressions.Regex.Match(validation, @"NumberToText\((\w+)\)");
-                   if (match.Success)
+                   string fieldCode = ExtractValidationFieldCode(validation, "NumberToText");
+                   if (!string.IsNullOrEmpty(fieldCode))
                    {
-                       string fieldCode = match.Groups[1].Value;
                        string expectedText = ocrValue.Value;
 
                        var val = scopeValues.FirstOrDefault(v => v.ExtractionKey.Code == fieldCode);
@@ -90,11 +89,9 @@ namespace ENTOS.Module.Services
                if (validation.Contains("SUM", StringComparison.OrdinalIgnoreCase))
                {
                    // Ví dụ: "SUM(FieldA) == FieldB"
-                   var match = System.Text.RegularExpressions.Regex.Match(validation, @"SUM\((\w+)\)");
-                   if (match.Success)
+                   string fieldCode = ExtractValidationFieldCode(validation, "SUM");
+                   if (!string.IsNullOrEmpty(fieldCode))
                    {
-                       string fieldCode = match.Groups[1].Value;
-
                        var sumVals = scopeValues
                            .Where(v => v.ExtractionKey.Code == fieldCode)
                            .Select(v => Convert.ToDecimal(CastValue(v.Value, v.ExtractionKey.DataType?.Name)))
@@ -132,23 +129,7 @@ namespace ENTOS.Module.Services
                }
 
                // Thay == thành toán tử C# để evaluate
-               if (expr.Contains("=="))
-               {
-                   var parts = expr.Split("==", StringSplitOptions.TrimEntries);
-                   if (parts.Length == 2)
-                   {
-                       decimal left = Convert.ToDecimal(new System.Data.DataTable().Compute(parts[0], ""));
-                       decimal right = Convert.ToDecimal(new System.Data.DataTable().Compute(parts[1], ""));
-                       return left == right;
-                   }
-               }
-               else
-               {
-                   // Chỉ là 1 phép tính: so sánh với chính ocrValue.Value
-                   decimal computed = Convert.ToDecimal(new System.Data.DataTable().Compute(expr, ""));
-                   decimal current = Convert.ToDecimal(CastValue(ocrValue.Value, ocrValue.ExtractionKey.DataType?.Name));
-                   return computed == current;
-               }
+               return EvaluateExpression(expr, ocrValue.Value, ocrValue.ExtractionKey.DataType?.Name);
            }
            catch
            {

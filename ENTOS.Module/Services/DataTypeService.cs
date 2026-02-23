@@ -47,7 +47,7 @@ namespace ENTOS.Module.Services
         #region SourceCode4533ImportCode
                 public Type GetDataTypeType(DataType dataType)
         {
-            return dataType.GetType();
+            return ResolveDataType(dataType);
         }
         #endregion SourceCode4533ImportCode
 

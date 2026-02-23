@@ -46,22 +46,17 @@ namespace ENTOS.Module.Services
                 
         public void MemberFolderLoad(string data, Folder folder)
         {
-            string[] parts = data.Split(new[] { '{', '}' }, System.StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length > 0)
+            if (TryGetFolderOid(data, out System.Guid oid))
             {
-                string oidString = parts[1]; // Extracting directly from the first split
-                if (System.Guid.TryParse(oidString, out System.Guid oid))
+                var tempFolder = ObjectSpace.FindObject<Folder>(
+                    DevExpress.Data.Filtering.CriteriaOperator.Parse("Oid = ? and FolderType = 'Member'", oid));
+                if (folder.FolderType.ToString() == "Accounting")
                 {
-                    var tempFolder = ObjectSpace.FindObject<Folder>(
-                        DevExpress.Data.Filtering.CriteriaOperator.Parse("Oid = ? and FolderType = 'Member'", oid));
-                    if (folder.FolderType.ToString() == "Accounting")
-                    {
-                        folder.MemberFolder = tempFolder;
-                    }
-                    foreach (var childFolder in folder.LowerFolder)
-                    {
-                        MemberFolderLoad( data, childFolder);
-                    }
+                    folder.MemberFolder = tempFolder;
+                }
+                foreach (var childFolder in folder.LowerFolder)
+                {
+                    MemberFolderLoad(data, childFolder);
                 }
             }
         }
@@ -106,18 +101,7 @@ namespace ENTOS.Module.Services
             {
                 if (singleChoiceAction.Items.FindItemByID(folder.Oid.ToString()) == null)
                 {
-                    string data = "MemberFolder.Oid = ?";
-                    //System.Reflection.Cu
-                    var listAttribute = viewController.View.ObjectTypeInfo.Type.GetCustomAttributes(typeof(CustomFilter), true);
-                    foreach (CustomFilter customAttribute in listAttribute)
-                    {
-
-                        if (customAttribute.Name.Equals("IFolder"))
-                        {
-                            data = customAttribute.Criteria;
-                            break;
-                        }
-                    }
+                    string data = ResolveFolderCriteria(viewController.View.ObjectTypeInfo.Type);
                     CreateTreeSource(singleChoiceAction, null, folder, data, "");
                 }
 

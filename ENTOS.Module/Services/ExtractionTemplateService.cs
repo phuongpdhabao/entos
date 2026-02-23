@@ -46,25 +46,9 @@ namespace ENTOS.Module.Services
                 public static string ExtractionKeyJson(ExtractionTemplate template)
         {
             // Lấy tên các key theo layout
-            var headerKeys = template.ExtractionKeyList
-                .Where(k => k.DataLayout.GetName() == "Header"
-                         || k.DataLayout.GetName() == "Footer"
-                         || k.DataLayout.GetName() == "Body")
-                .Select(k => k.Name)
-                .OrderBy(x => x) // 🔹 sắp xếp alphabet
-                .ToList();
-
-            var tableKeys = template.ExtractionKeyList
-                .Where(k => k.DataLayout.GetName() == "Table")
-                .Select(k => k.Name)
-                .OrderBy(x => x) // 🔹 sắp xếp alphabet
-                .ToList();
-
-            var table2Keys = template.ExtractionKeyList
-                .Where(k => k.DataLayout.GetName() == "Table2")
-                .Select(k => k.Name)
-                .OrderBy(x => x) // 🔹 sắp xếp alphabet
-                .ToList();
+            var headerKeys = GetLayoutKeys(template, "Header", "Footer", "Body");
+            var tableKeys = GetLayoutKeys(template, "Table");
+            var table2Keys = GetLayoutKeys(template, "Table2");
 
 
             // Tạo object cho phần DataType (giá trị của template.SystemType.Name)
@@ -79,21 +63,11 @@ namespace ENTOS.Module.Services
             }
 
             // Tạo DataTypeMember: mảng có 1 object chứa các tableKeys
-            var dataTypeMemberObj = new Dictionary<string, string>();
-            foreach (var tk in tableKeys)
-            {
-                if (!dataTypeMemberObj.ContainsKey(tk))
-                    dataTypeMemberObj[tk] = "";
-            }
+            var dataTypeMemberObj = BuildKeyDictionary(tableKeys);
             dataTypeObject["DataTypeMember"] = new List<Dictionary<string, string>> { dataTypeMemberObj };
 
             // Tạo nested DataType: mảng có 1 object chứa các table2Keys (ví dụ Interface,...)
-            var nestedDataTypeObj = new Dictionary<string, string>();
-            foreach (var t2k in table2Keys)
-            {
-                if (!nestedDataTypeObj.ContainsKey(t2k))
-                    nestedDataTypeObj[t2k] = "";
-            }
+            var nestedDataTypeObj = BuildKeyDictionary(table2Keys);
             dataTypeObject["DataType"] = new List<Dictionary<string, string>> { nestedDataTypeObj };
 
             // Tạo root: mảng chứa 1 object { SystemType.Name : dataTypeObject }

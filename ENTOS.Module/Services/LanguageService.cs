@@ -55,7 +55,7 @@ namespace ENTOS.Module.Services
              {
                  _dataService = (DataService)args?.AcceptActionArgs?.CurrentObject;
              };
-             var criteria = DevExpress.Data.Filtering.CriteriaOperator.Parse("SoftwareServiceType.Code = 'Translate'");
+             var criteria = GetTranslateDataServiceCriteria();
              Module.Helpers.XafXpoHelper.PopupDialogControllerListView(viewController, dc, typeof(DataService), viewController.View.ObjectSpace, "BookmarkImport", criteria, false, null, false, true);
          }
      }

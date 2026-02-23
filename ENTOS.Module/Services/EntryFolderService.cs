@@ -46,65 +46,15 @@ namespace ENTOS.Module.Services
                 public static decimal CalculateTotalPropertyValue(EntryFolder folder, string choice)
         {
             decimal totalValue = 0;
-            bool mark = true;
-            bool mark2 = true;
 
             foreach (var accountEntry in folder.AccountEntryList)
             {
-                if (accountEntry.Amount is null)
-                    continue;
-                if (choice.StartsWith("Book1") && accountEntry.Book1 == false)
-                    continue;
-                if (choice.StartsWith("Book2") && accountEntry.Book2 == false)
-                    continue;
-
-                var EntryTemp = accountEntry.Amount.Value;
-
-                if (choice == "Book1Sum" || choice == "Book2Sum")
-                {
-                    mark = (accountEntry.Debit && folder.EntryType == EntryType.Debit) || (!accountEntry.Debit && folder.EntryType != EntryType.Debit);
-                    if (mark == true) totalValue += EntryTemp;
-                    else totalValue -= EntryTemp;
-                }
-                else if (choice == "Book1Debit" || choice == "Book2Debit")
-                {
-                    mark = accountEntry.Debit;
-                    if (mark == true) totalValue += EntryTemp;
-                }
-                else if (choice == "Book1Credit" || choice == "Book2Credit")
-                {
-                    mark = !accountEntry.Debit;
-                    if (mark == true) totalValue += EntryTemp;
-                }
-
+                totalValue += GetAccountEntryContribution(accountEntry, folder.EntryType, choice);
             }
 
             foreach (var partyAccount in folder.PartyAccountList)
             {
-                if (partyAccount.Amount is null)
-                    continue;
-                if (choice.StartsWith("Book1") && partyAccount.Book1 == false)
-                    continue;
-                if (choice.StartsWith("Book2") && partyAccount.Book2 == false)
-                    continue;
-                var PartyTemp = partyAccount.Amount.Value;
-
-                if (choice == "Book1Sum" || choice == "Book2Sum")
-                {
-                    mark2 = (partyAccount.Debit && partyAccount.EntryFolder.EntryType != EntryType.Debit) || (!partyAccount.Debit && partyAccount.EntryFolder.EntryType == EntryType.Debit);
-                    if (mark2 == true) totalValue += PartyTemp;
-                    else totalValue -= PartyTemp;
-                }
-                else if (choice == "Book1Debit" || choice == "Book2Debit")
-                {
-                    mark2 = !partyAccount.Debit;
-                    if (mark2 == true) totalValue += PartyTemp;
-                }
-                else if (choice == "Book1Credit" || choice == "Book2Credit")
-                {
-                    mark2 = partyAccount.Debit;
-                    if (mark2 == true) totalValue += PartyTemp;
-                }
+                totalValue += GetPartyAccountContribution(partyAccount, choice);
             }
             foreach (var childFolder in folder.LowerFolderList)
             {

@@ -49,17 +49,17 @@ namespace ENTOS.Module.Services
             OpenCvSharp.Cv2.Rectangle(img, new OpenCvSharp.Rect(x, y, size, size), OpenCvSharp.Scalar.Red, 2);
         }
 
-        internal static  bool IsImage(string path)
+        internal static bool IsImage(string path)
         {
-            string ext = System.IO.Path.GetExtension(path).ToLowerInvariant();
-            return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tiff";
+            return HasFileExtension(path, ImageExtensions);
         }
 
         internal static bool IsVideo(string path)
         {
-            string ext = System.IO.Path.GetExtension(path).ToLowerInvariant();
-            return ext == ".mp4" || ext == ".avi" || ext == ".mov" || ext == ".mkv" || ext == ".wmv";
+            return HasFileExtension(path, VideoExtensions);
 		}
+
+
         #endregion SourceCode4522ImportCode
 
   

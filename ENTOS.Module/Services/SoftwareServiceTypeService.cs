@@ -58,10 +58,10 @@ namespace ENTOS.Module.Services
 
         public async static Task<string> GetKIEResult(Application.DTOs.DataServiceDto dataServiceDto, string fileJson, string[] headerKeyList, string[] footerKeyList, string[] tableKeyList, string[] bodyKeyList)
         {
-            string headerKeys = string.Join(", ", headerKeyList);
-            string footerKeys = string.Join(", ", footerKeyList);
-            string tableKeys = string.Join(", ", tableKeyList);
-            string bodyKeys = string.Join(", ", bodyKeyList);
+            string headerKeys = JoinKeys(headerKeyList);
+            string footerKeys = JoinKeys(footerKeyList);
+            string tableKeys = JoinKeys(tableKeyList);
+            string bodyKeys = JoinKeys(bodyKeyList);
             object[] inputs = new object[] { fileJson, headerKeys, footerKeys, tableKeys, bodyKeys };
             var DataServiceService = new Module.Services.DataServiceService();
             using var client = Module.Helpers.HttpHelper.CreateHttpClient(1800, true);

@@ -51,9 +51,9 @@ namespace ENTOS.Module.Services
     System.Text.StringBuilder sb = new System.Text.StringBuilder();
     foreach (Article obj in selectedObjects)
     {
-        var name = string.IsNullOrEmpty(obj.Name) ? "Không có tên" : obj.Name;
-        var link = string.IsNullOrEmpty(obj.Link) ? "Không có link" : obj.Link;
-        sb.AppendLine($"{name}\n{link}\n");
+        var name = GetDisplayValue(obj.Name, "Không có tên");
+        var link = GetDisplayValue(obj.Link, "Không có link");
+        sb.AppendLine(BuildShareEntry(name, link));
     }
     // copy vào clipboard
     if (sb.Length > 0)

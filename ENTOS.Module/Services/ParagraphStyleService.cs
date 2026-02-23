@@ -60,10 +60,7 @@ namespace ENTOS.Module.Services
                 }
                 for (int i = 0; i < paragraphStyles.Count; i++)
                 {
-                    string styleName = "S";
-                    if (i < 9)
-                        styleName += "0";
-                    styleName += i + 1;
+                    string styleName = BuildStyleName(i);
                     paragraphStyles[i].Name = styleName;
                 }
             //}
@@ -102,9 +99,7 @@ namespace ENTOS.Module.Services
                                     audio.ParagraphStyle = replaceParagraphStyle;
                                 }
                             }
-                            if (!string.IsNullOrEmpty(message))
-                                message += System.Environment.NewLine;
-                            message += string.Format("Kiểu cách {0} được thay thế bằng {1}", paragraphStyle.Name, replaceParagraphStyle.Name);
+                            message = AppendReplacementMessage(message, paragraphStyle.Name, replaceParagraphStyle.Name);
                             paragraphStyle.Delete();                          
                             break;
                         }
